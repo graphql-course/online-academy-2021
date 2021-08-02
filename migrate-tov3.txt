@@ -1,0 +1,8 @@
+1.- Instalar Apollo Server Express 3
+npm install apollo-server-express@^3
+2.- Eliminar GraphQL Middleware Express Playground
+npm un graphql-playground-middleware-express
+3.- Añadir "start" para iniciar el server antes de aplicar el middleware de la app
+await server.start();           <==========
+server.applyMiddleware({ app: this.app });
+4.- Eliminar "playground" en la configuración

@@ -4,7 +4,6 @@ import compression from "compression";
 import express, { Application } from "express";
 import { GraphQLSchema } from "graphql";
 import { ApolloServer } from "apollo-server-express";
-import expressPlayGround from "graphql-playground-middleware-express";
 import depthLimit from 'graphql-depth-limit'
 class Server {
   private app!: Application;
@@ -38,16 +37,15 @@ class Server {
     this.app.use(compression());
   }
 
-  private configApolloServer() {
+  private async configApolloServer() {
     // COnfigurar el servidor apollo server
 
     const server = new ApolloServer({
       schema: this.schema,
       introspection: true,
-      playground: true,
       validationRules: [ depthLimit(4) ]
     });
-
+    await server.start();
     server.applyMiddleware({ app: this.app });
   }
 
@@ -56,12 +54,9 @@ class Server {
       res.send("Bienvenidos/as al curso de GraphQL desde 0");
     });
 
-    this.app.use(
-      "/",
-      expressPlayGround({
-        endpoint: "/graphql",
-      })
-    );
+    this.app.get("/", function (_, res) {
+      res.redirect("/graphql");
+    });
   }
 
   private createServer() {

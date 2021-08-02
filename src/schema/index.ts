@@ -1,7 +1,7 @@
 
 import "graphql-import-node";
 import typeDefs from "./schema.graphql";
-import { makeExecutableSchema } from "apollo-server-express";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { GraphQLSchema } from "graphql";
 import resolvers from "./../resolvers";
 
