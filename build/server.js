@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
-const cors_1 = __importDefault(require("cors"));
 const compression_1 = __importDefault(require("compression"));
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
 const graphql_depth_limit_1 = __importDefault(require("graphql-depth-limit"));
+const apollo_server_core_1 = require("apollo-server-core");
 class Server {
     constructor(schema) {
         this.DEFAULT_PORT_SERVER = process.env.DEFAULT_PORT_SERVER || 3003;
@@ -35,7 +35,6 @@ class Server {
     }
     configExpress() {
         this.app = express_1.default();
-        this.app.use(cors_1.default());
         this.app.use(compression_1.default());
     }
     configApolloServer() {
@@ -43,10 +42,11 @@ class Server {
             const server = new apollo_server_express_1.ApolloServer({
                 schema: this.schema,
                 introspection: true,
-                validationRules: [graphql_depth_limit_1.default(4)]
+                validationRules: [graphql_depth_limit_1.default(4)],
+                plugins: [apollo_server_core_1.ApolloServerPluginLandingPageGraphQLPlayground()],
             });
             yield server.start();
-            server.applyMiddleware({ app: this.app });
+            server.applyMiddleware({ app: this.app, cors: true });
         });
     }
     configRoutes() {
@@ -67,3 +67,6 @@ class Server {
     }
 }
 exports.default = Server;
+function ApolloServerPluginLandingPageDisabled() {
+    throw new Error("Function not implemented.");
+}

@@ -5,6 +5,7 @@ import express, { Application } from "express";
 import { GraphQLSchema } from "graphql";
 import { ApolloServer } from "apollo-server-express";
 import depthLimit from 'graphql-depth-limit'
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 class Server {
   private app!: Application;
   private httpServer!: HTTPServer;
@@ -32,8 +33,6 @@ class Server {
   private configExpress() {
     this.app = express();
 
-    this.app.use(cors());
-
     this.app.use(compression());
   }
 
@@ -43,10 +42,12 @@ class Server {
     const server = new ApolloServer({
       schema: this.schema,
       introspection: true,
-      validationRules: [ depthLimit(4) ]
+      validationRules: [ depthLimit(4) ],
+      // Para que podamos tener disponible el playground en producción
+      plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
     });
     await server.start();
-    server.applyMiddleware({ app: this.app });
+    server.applyMiddleware({ app: this.app, cors: true });
   }
 
   private configRoutes() {
@@ -71,3 +72,7 @@ class Server {
 }
 
 export default Server;
+function ApolloServerPluginLandingPageDisabled(): import("apollo-server-core").PluginDefinition {
+  throw new Error("Function not implemented.");
+}
+
