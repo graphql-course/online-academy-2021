@@ -6,6 +6,8 @@ import { GraphQLSchema } from "graphql";
 import { ApolloServer } from "apollo-server-express";
 import depthLimit from 'graphql-depth-limit'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import expressPlayGround from "graphql-playground-middleware-express";
+
 class Server {
   private app!: Application;
   private httpServer!: HTTPServer;
@@ -51,13 +53,11 @@ class Server {
   }
 
   private configRoutes() {
-    this.app.use("/hello", (_, res) => {
+    this.app.get("/hello", (_, res) => {
       res.send("Bienvenidos/as al curso de GraphQL desde 0");
     });
 
-    this.app.use("/", function (_, res) {
-      res.redirect("/graphql");
-    });
+    this.app.get('/', expressPlayGround({ endpoint: '/graphql' }));
   }
 
   private createServer() {
