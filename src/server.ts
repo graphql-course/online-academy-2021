@@ -55,13 +55,12 @@ class Server {
       res.send("Bienvenidos/as al curso de GraphQL desde 0");
     });
 
-    this.app.get("/", function (req, res) {
-      
-      if (process.env.NODE_ENV === 'production') {
-        res.redirect(`https://${req.header('host')}${req.url}/graphql`)
-      } else {
-        res.redirect("/graphql");
-      }
+    this.app.get("/", function (req, res, next) {
+      if(req.headers['x-forwarded-proto']!='https'){
+        res.redirect('https://online-academy-graphql-2021.herokuapp.com/graphql');
+       } else {
+        next()
+       } /* Continue to other routes if we're not redirecting */
     });
   }
 
