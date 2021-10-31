@@ -13,7 +13,7 @@ class Server {
   private httpServer!: HTTPServer;
   private schema!: GraphQLSchema;
   private readonly DEFAULT_PORT_SERVER =
-    process.env.DEFAULT_PORT_SERVER || 3003;
+    process.env.PORT || 3003;
   constructor(schema: GraphQLSchema) {
     if (schema === undefined) {
       throw new Error("Need GraphQL Schema to work in API GraphQL");
