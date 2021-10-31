@@ -55,8 +55,13 @@ class Server {
       res.send("Bienvenidos/as al curso de GraphQL desde 0");
     });
 
-    this.app.get("/", function (_, res) {
-      res.redirect("/graphql");
+    this.app.get("/", function (req, res) {
+      
+      if (process.env.NODE_ENV === 'production') {
+        res.redirect(`https://${req.header('host')}${req.url}/graphql`)
+      } else {
+        res.redirect("/graphql");
+      }
     });
   }
 
